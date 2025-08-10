@@ -56,7 +56,7 @@ const NFTCard = ({ nftData, loading = false }) => {
   };
 
   return (
-    <div className="nft__item">
+    <div className="nft__item" data-aos="fade-up" data-aos-delay="100">
       <div className="author_list_pp">
         <Link
           to={`/author/${nftData.authorId}`}

@@ -3019,6 +3019,8 @@ a.btn-slider:hover {
   background: #fff;
   border-color: #000;
   border: solid 2px #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 a.btn-main:hover,
@@ -3027,6 +3029,7 @@ a.btn-main:hover,
   -webkit-box-shadow: 2px 2px 20px 0px rgba(var(--secondary-color-rgb), 0.5);
   -moz-box-shadow: 2px 2px 20px 0px rgba(var(--secondary-color-rgb), 0.5);
   box-shadow: 2px 2px 20px 0px rgba(var(--secondary-color-rgb), 0.5);
+  transform: translateY(-2px);
 }
 
 a.btn-slider:hover:after {
@@ -3111,6 +3114,7 @@ a.btn-line {
   padding: 8px 40px;
   font-size: 14px;
   border: none;
+  transition: all 0.3s ease;
 }
 
 a.btn-lg {
@@ -12777,6 +12781,15 @@ a.read_more i {
 }
 
 .nft_coll {
+  transition: all 0.3s ease;
+}
+
+.nft_coll:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.nft_coll {
   text-align: center;
 }
 
@@ -12845,6 +12858,11 @@ a.read_more i {
 .author_list li {
   position: relative;
   margin-bottom: 30px;
+  transition: all 0.3s ease;
+}
+
+.author_list li:hover {
+  transform: translateY(-5px);
 }
 
 .author_list_pp {
@@ -12864,6 +12882,11 @@ a.read_more i {
   -webkit-border-radius: 100% !important;
   position: relative;
   z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.author_list_pp:hover img {
+  transform: scale(1.1);
 }
 
 .author_list_pp a:hover img {
@@ -13220,6 +13243,23 @@ a.read_more i {
   transform: scale(1.03);
 }
 
+.nft__item {
+  transition: all 0.3s ease;
+}
+
+.nft__item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.nft__item img {
+  transition: transform 0.3s ease;
+}
+
+.nft__item:hover img {
+  transform: scale(1.05);
+}
+
 .nft__item_wrap {
   width: 100%;
   text-align: center;
@@ -13569,6 +13609,14 @@ a.read_more i {
 
 .nft_pic:hover img {
   transform: scale(1.2);
+}
+
+.nft_pic {
+  transition: all 0.3s ease;
+}
+
+.nft_pic:hover {
+  transform: translateY(-3px);
 }
 
 .nft_pic_info {
@@ -14212,6 +14260,8 @@ header:not(.header-light) #quick_search::-webkit-input-placeholder {
 
 .dropdown li span:hover {
   background: #eeeeee;
+  transform: translateY(-2px);
+  transition: transform 0.3s ease;
 }
 
 .dropdown li.active {
@@ -14797,6 +14847,8 @@ a.btn-slider:hover {
 
 .social-icons-sm i:hover {
   color: #ffffff;
+  transform: scale(1.2);
+  transition: transform 0.3s ease;
 }
 
 .arrowup {
