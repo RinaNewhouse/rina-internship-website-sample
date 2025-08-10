@@ -97,7 +97,28 @@ const NFTCard = ({ nftData, loading = false }) => {
             </div>
           </div>
         </div>
-        <Link to="/item-details">
+        <Link 
+          to="/item-details" 
+          state={{ 
+            nftData: {
+              id: nftData.id,
+              title: nftData.title || 'Untitled',
+              description: nftData.description || 'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+              image: nftData.nftImage || nftImage,
+              author: {
+                name: nftData.authorName || 'Unknown Author',
+                image: nftData.authorImage || AuthorImage
+              },
+              owner: {
+                name: nftData.authorName || 'Unknown Owner',
+                image: nftData.authorImage || AuthorImage
+              },
+              price: nftData.price || '0',
+              views: nftData.views || '100',
+              likes: nftData.likes || '0'
+            }
+          }}
+        >
           <img 
             src={nftData.nftImage || nftImage} 
             className="lazy nft__item_preview" 
@@ -107,7 +128,28 @@ const NFTCard = ({ nftData, loading = false }) => {
         </Link>
       </div>
       <div className="nft__item_info">
-        <Link to="/item-details">
+        <Link 
+          to="/item-details" 
+          state={{ 
+            nftData: {
+              id: nftData.id,
+              title: nftData.title || 'Untitled',
+              description: nftData.description || 'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+              image: nftData.nftImage || nftImage,
+              author: {
+                name: nftData.authorName || 'Unknown Author',
+                image: nftData.authorImage || AuthorImage
+              },
+              owner: {
+                name: nftData.authorName || 'Unknown Owner',
+                image: nftData.authorImage || AuthorImage
+              },
+              price: nftData.price || '0',
+              views: nftData.views || '100',
+              likes: nftData.likes || '0'
+            }
+          }}
+        >
           <h4>{nftData.title || 'Untitled'}</h4>
         </Link>
         <div className="nft__item_price">{nftData.price || 0} ETH</div>

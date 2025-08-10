@@ -247,7 +247,28 @@ const AuthorItems = ({ authorId, authorImage }) => {
                       </div>
                     </div>
                   </div>
-                  <Link to="/item-details">
+                  <Link 
+                    to="/item-details" 
+                    state={{ 
+                      nftData: {
+                        id: item.id,
+                        title: item.title,
+                        description: 'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+                        image: item.image,
+                        author: {
+                          name: item.authorName || 'Unknown Author',
+                          image: item.authorImage
+                        },
+                        owner: {
+                          name: item.authorName || 'Unknown Owner',
+                          image: item.authorImage
+                        },
+                        price: item.price,
+                        views: '100',
+                        likes: item.likes
+                      }
+                    }}
+                  >
                     <img
                       src={item.image}
                       className="lazy nft__item_preview"
@@ -257,7 +278,28 @@ const AuthorItems = ({ authorId, authorImage }) => {
                   </Link>
                 </div>
                 <div className="nft__item_info">
-                  <Link to="/item-details">
+                  <Link 
+                    to="/item-details" 
+                    state={{ 
+                      nftData: {
+                        id: item.id,
+                        title: item.title,
+                        description: 'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+                        image: item.image,
+                        author: {
+                          name: item.authorName || 'Unknown Author',
+                          image: item.authorImage
+                        },
+                        owner: {
+                          name: item.authorName || 'Unknown Owner',
+                          image: item.authorImage
+                        },
+                        price: item.price,
+                        views: '100',
+                        likes: item.likes
+                      }
+                    }}
+                  >
                     <h4>{item.title}</h4>
                   </Link>
                   <div className="nft__item_price">{item.price} ETH</div>

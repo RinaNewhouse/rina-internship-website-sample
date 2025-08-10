@@ -118,7 +118,28 @@ const HotCollections = () => {
                   <div key={item.id}>
                     <div className="nft_coll">
                       <div className="nft_wrap">
-                        <Link to="/item-details">
+                        <Link 
+                          to="/item-details" 
+                          state={{ 
+                            nftData: {
+                              id: item.id,
+                              title: item.title || 'Untitled Collection',
+                              description: item.description || 'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+                              image: item.nftImage || item.image,
+                              author: {
+                                name: item.authorName || 'Unknown Author',
+                                image: item.authorImage || 'https://via.placeholder.com/50x50/6366f1/ffffff?text=Author'
+                              },
+                              owner: {
+                                name: item.authorName || 'Unknown Owner',
+                                image: item.authorImage || 'https://via.placeholder.com/50x50/6366f1/ffffff?text=Author'
+                              },
+                              price: item.price || '0',
+                              views: item.views || '100',
+                              likes: item.likes || '74'
+                            }
+                          }}
+                        >
                           <img 
                             src={item.nftImage || item.image} 
                             className="lazy img-fluid" 
@@ -143,7 +164,28 @@ const HotCollections = () => {
                         </Link>
                       </div>
                       <div className="nft_coll_info">
-                        <Link to="/item-details">
+                        <Link 
+                          to="/item-details" 
+                          state={{ 
+                            nftData: {
+                              id: item.id,
+                              title: item.title || 'Untitled Collection',
+                              description: item.description || 'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
+                              image: item.nftImage || item.image,
+                              author: {
+                                name: item.authorName || 'Unknown Author',
+                                image: item.authorImage || 'https://via.placeholder.com/50x50/6366f1/ffffff?text=Author'
+                              },
+                              owner: {
+                                name: item.authorName || 'Unknown Owner',
+                                image: item.authorImage || 'https://via.placeholder.com/50x50/6366f1/ffffff?text=Author'
+                              },
+                              price: item.price || '0',
+                              views: item.views || '100',
+                              likes: item.likes || '74'
+                            }
+                          }}
+                        >
                           <h4>{item.title || 'Untitled Collection'}</h4>
                         </Link>
                         <span>{item.price || 0} ETH</span>
