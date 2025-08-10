@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import AuthorImage from "../../images/author_thumbnail.jpg";
+
 import nftImage from "../../images/nftImage.jpg";
 
 const AuthorItemsSkeleton = () => {
@@ -49,109 +49,7 @@ const AuthorItemsSkeleton = () => {
   );
 };
 
-// Generate varied, realistic NFT data
-const generateMockNFTItems = (authorId, authorImage) => {
-  const nftTitles = [
-    "Cosmic Dreams",
-    "Digital Harmony", 
-    "Neon Nights",
-    "Abstract Reality",
-    "Future Visions",
-    "Cyberpunk Dreams",
-    "Ethereal Beauty",
-    "Quantum Chaos",
-    "Digital Serenity",
-    "Neon Genesis",
-    "Abstract Mind",
-    "Future Forward",
-    "Digital Dreams",
-    "Cosmic Journey",
-    "Neon Lights",
-    "Abstract Soul"
-  ];
-
-  const nftStyles = [
-    "abstract", "cyberpunk", "cosmic", "neon", "digital", "futuristic", "ethereal", "geometric"
-  ];
-
-  const priceRanges = [
-    { min: 0.5, max: 1.5 },
-    { min: 1.5, max: 3.0 },
-    { min: 3.0, max: 5.0 },
-    { min: 5.0, max: 8.0 }
-  ];
-
-  const likeRanges = [
-    { min: 50, max: 150 },
-    { min: 150, max: 300 },
-    { min: 300, max: 500 },
-    { min: 500, max: 800 }
-  ];
-
-  // Generate varied images using different approaches
-  const generateImageUrl = (index, style) => {
-    // Use different image generation strategies for variety
-    const strategies = [
-      // Strategy 1: Use Picsum for random images with different seeds
-      `https://picsum.photos/400/400?random=${authorId}${index}`,
-      // Strategy 2: Use Unsplash for themed images
-      `https://source.unsplash.com/400x400/?${style},art&sig=${authorId}${index}`,
-      // Strategy 3: Use different color schemes with placeholder
-      `https://via.placeholder.com/400x400/${getRandomColor()}/FFFFFF?text=${style.toUpperCase()}`,
-      // Strategy 4: Use geometric patterns
-      `https://dummyimage.com/400x400/${getRandomColor()}/${getRandomColor()}&text=${style}`,
-      // Strategy 5: Use abstract art generators with blur
-      `https://picsum.photos/400/400?random=${authorId}${index + 100}&blur=1`,
-      // Strategy 6: Use different aspect ratios for variety
-      `https://source.unsplash.com/400x400/?digital,${style}&sig=${authorId}${index + 200}`,
-      // Strategy 7: Use more specific art styles
-      `https://source.unsplash.com/400x400/?${style},painting&sig=${authorId}${index + 300}`,
-      // Strategy 8: Use color-based patterns
-      `https://via.placeholder.com/400x400/${getRandomColor()}/${getRandomColor()}&text=ART`
-    ];
-    
-    return strategies[index % strategies.length];
-  };
-
-  const getRandomColor = () => {
-    const colors = ['FF6B6B', '4ECDC4', '45B7D1', '96CEB4', 'FFEAA7', 'DDA0DD', '98D8C8', 'F7DC6F', 'A8E6CF', 'FF8B94', 'FFD3B6', 'FFAAA5', 'B8E6B8', 'FFB6C1', '87CEEB', 'DDA0DD'];
-    return colors[Math.floor(Math.random() * colors.length)];
-  };
-
-  const generateRandomPrice = () => {
-    const range = priceRanges[Math.floor(Math.random() * priceRanges.length)];
-    return (Math.random() * (range.max - range.min) + range.min).toFixed(2);
-  };
-
-  const generateRandomLikes = () => {
-    const range = likeRanges[Math.floor(Math.random() * likeRanges.length)];
-    return Math.floor(Math.random() * (range.max - range.min) + range.min);
-  };
-
-  // Generate 8-12 varied NFT items
-  const itemCount = 8 + Math.floor(Math.random() * 4);
-  const items = [];
-
-  for (let i = 0; i < itemCount; i++) {
-    const style = nftStyles[Math.floor(Math.random() * nftStyles.length)];
-    const title = nftTitles[Math.floor(Math.random() * nftTitles.length)];
-    
-    items.push({
-      id: i + 1,
-      title: `${title} #${String(i + 1).padStart(3, '0')}`,
-      price: generateRandomPrice(),
-      likes: generateRandomLikes(),
-      image: generateImageUrl(i, style),
-      authorImage: authorImage || AuthorImage, // Use the provided authorImage or fallback
-      style: style,
-      description: `A unique ${style} digital artwork created by the artist.`
-    });
-  }
-
-  return items;
-};
-
-const AuthorItems = ({ authorId, authorImage }) => {
+const AuthorItems = ({ authorId, authorImage, authorData }) => {
   const [authorItems, setAuthorItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -167,13 +65,13 @@ const AuthorItems = ({ authorId, authorImage }) => {
           return;
         }
         
-        // Simulating API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Generate varied, realistic mock data
-        const mockItems = generateMockNFTItems(authorId, authorImage);
-        
-        setAuthorItems(mockItems);
+        // If we have authorData with nftCollection, use that
+        if (authorData && authorData.nftCollection && authorData.nftCollection.length > 0) {
+          setAuthorItems(authorData.nftCollection);
+        } else {
+          // No data available - show empty state
+          setAuthorItems([]);
+        }
       } catch (err) {
         setError(err.message);
         console.error('Error fetching author items:', err);
@@ -183,7 +81,7 @@ const AuthorItems = ({ authorId, authorImage }) => {
     };
 
     fetchAuthorItems();
-  }, [authorId, authorImage]);
+  }, [authorId, authorImage, authorData]);
 
   const handleImageError = (e) => {
     // Fallback to a different image if the generated one fails
@@ -225,7 +123,7 @@ const AuthorItems = ({ authorId, authorImage }) => {
               <div className="nft__item">
                 <div className="author_list_pp">
                   <Link to="">
-                    <img className="lazy" src={item.authorImage} alt="" />
+                    <img className="lazy" src={authorImage} alt="" />
                     <i className="fa fa-check"></i>
                   </Link>
                 </div>
@@ -248,29 +146,10 @@ const AuthorItems = ({ authorId, authorImage }) => {
                     </div>
                   </div>
                   <Link 
-                    to="/item-details" 
-                    state={{ 
-                      nftData: {
-                        id: item.id,
-                        title: item.title,
-                        description: 'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
-                        image: item.image,
-                        author: {
-                          name: item.authorName || 'Unknown Author',
-                          image: item.authorImage
-                        },
-                        owner: {
-                          name: item.authorName || 'Unknown Owner',
-                          image: item.authorImage
-                        },
-                        price: item.price,
-                        views: '100',
-                        likes: item.likes
-                      }
-                    }}
+                    to={`/item-details/${item.nftId}`}
                   >
                     <img
-                      src={item.image}
+                      src={item.nftImage || item.image}
                       className="lazy nft__item_preview"
                       alt={item.title}
                       onError={handleImageError}
@@ -279,26 +158,7 @@ const AuthorItems = ({ authorId, authorImage }) => {
                 </div>
                 <div className="nft__item_info">
                   <Link 
-                    to="/item-details" 
-                    state={{ 
-                      nftData: {
-                        id: item.id,
-                        title: item.title,
-                        description: 'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
-                        image: item.image,
-                        author: {
-                          name: item.authorName || 'Unknown Author',
-                          image: item.authorImage
-                        },
-                        owner: {
-                          name: item.authorName || 'Unknown Owner',
-                          image: item.authorImage
-                        },
-                        price: item.price,
-                        views: '100',
-                        likes: item.likes
-                      }
-                    }}
+                    to={`/item-details/${item.nftId}`}
                   >
                     <h4>{item.title}</h4>
                   </Link>

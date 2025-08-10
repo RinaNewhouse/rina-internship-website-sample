@@ -37,8 +37,8 @@ const NewItems = () => {
     slidesToScroll: 1,
     pauseOnHover: true,
     arrows: true,
-    prevArrow: <button className="slick-prev"><i className="fa fa-angle-left"></i></button>,
-    nextArrow: <button className="slick-next"><i className="fa fa-angle-right"></i></button>,
+    prevArrow: <button className="slick-prev" type="button"><i className="fa fa-angle-left"></i></button>,
+    nextArrow: <button className="slick-next" type="button"><i className="fa fa-angle-right"></i></button>,
     responsive: [
       {
         breakpoint: 1200,
@@ -137,7 +137,7 @@ const NewItems = () => {
                           to={`/author/${item.authorId || 'unknown'}`}
                           data-bs-toggle="tooltip"
                           data-bs-placement="top"
-                          title={`Creator: ${item.authorName || 'Unknown'}`}
+                          title={`Creator: ${item.authorName || ''}`}
                         >
                           <img
                             className="lazy"
@@ -175,26 +175,7 @@ const NewItems = () => {
                           </div>
                         </div>
                         <Link 
-                          to="/item-details" 
-                          state={{ 
-                            nftData: {
-                              id: item.id,
-                              title: item.title || 'Untitled NFT',
-                              description: item.description || 'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
-                              image: item.nftImage || item.image,
-                              author: {
-                                name: item.authorName || 'Unknown Author',
-                                image: item.authorImage || 'https://via.placeholder.com/50x50/6366f1/ffffff?text=Author'
-                              },
-                              owner: {
-                                name: item.authorName || 'Unknown Owner',
-                                image: item.authorImage || 'https://via.placeholder.com/50x50/6366f1/ffffff?text=Author'
-                              },
-                              price: item.price || '0',
-                              views: item.views || '100',
-                              likes: item.likes || '0'
-                            }
-                          }}
+                          to={`/item-details/${item.nftId}`}
                         >
                           <img
                             src={item.nftImage || item.image}
@@ -208,28 +189,9 @@ const NewItems = () => {
                       </div>
                       <div className="nft__item_info">
                         <Link 
-                          to="/item-details" 
-                          state={{ 
-                            nftData: {
-                              id: item.id,
-                              title: item.title || 'Untitled NFT',
-                              description: item.description || 'doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.',
-                              image: item.nftImage || item.image,
-                              author: {
-                                name: item.authorName || 'Unknown Author',
-                                image: item.authorImage || 'https://via.placeholder.com/50x50/6366f1/ffffff?text=Author'
-                              },
-                              owner: {
-                                name: item.authorName || 'Unknown Owner',
-                                image: item.authorImage || 'https://via.placeholder.com/50x50/6366f1/ffffff?text=Author'
-                              },
-                              price: item.price || '0',
-                              views: item.views || '100',
-                              likes: item.likes || '0'
-                            }
-                          }}
+                          to={`/item-details/${item.nftId}`}
                         >
-                          <h4>{item.title || 'Untitled NFT'}</h4>
+                          <h4>{item.title || ''}</h4>
                         </Link>
                         <div className="nft__item_price">
                           <span>{item.price || 0} ETH</span>

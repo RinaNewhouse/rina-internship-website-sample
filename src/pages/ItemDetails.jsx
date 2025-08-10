@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import EthImage from "../images/ethereum.svg";
 import { Link } from "react-router-dom";
 import AuthorImage from "../images/author_thumbnail.jpg";
 import nftImage from "../images/nftImage.jpg";
 
 const ItemDetails = () => {
-  const { id } = useParams();
-  const location = useLocation();
+  const { nftId } = useParams();
   const [nftData, setNftData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,37 +14,42 @@ const ItemDetails = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     
-    // Get NFT data from location state (passed from carousel components)
-    console.log('Location state:', location.state);
-    if (location.state && location.state.nftData) {
-      console.log('NFT data received:', location.state.nftData);
-      setNftData(location.state.nftData);
-      setLoading(false);
-    } else {
-      console.log('No NFT data received, using fallback data');
-      // Fallback: simulate loading and show default data
-      setTimeout(() => {
-        setNftData({
-          id: id || "default",
-          title: "Rainbow Style #194",
-          description: "doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.",
-          image: nftImage,
-          author: {
-            name: "Monica Lucas",
-            image: AuthorImage
-          },
-          owner: {
-            name: "Monica Lucas",
-            image: AuthorImage
-          },
-          price: "1.85",
-          views: "100",
-          likes: "74"
-        });
+    const fetchNFTDetails = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        if (!nftId) {
+          throw new Error('No NFT ID provided');
+        }
+
+        console.log('Fetching NFT details for ID:', nftId);
+        
+        // Fetch NFT details from API
+        const response = await fetch(`https://us-central1-nft-cloud-functions.cloudfunctions.net/itemDetails?nftId=${nftId}`);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        console.log('API response:', data);
+        
+        if (data && data.nftId) {
+          setNftData(data);
+        } else {
+          throw new Error('Invalid data received from API');
+        }
+      } catch (err) {
+        console.error('Error fetching NFT details:', err);
+        setError(err.message || 'Failed to load NFT details');
+      } finally {
         setLoading(false);
-      }, 1500); // Simulate loading time
-    }
-  }, [id, location.state]);
+      }
+    };
+
+    fetchNFTDetails();
+  }, [nftId]);
 
   if (loading) {
     return (
@@ -146,6 +150,27 @@ const ItemDetails = () => {
     );
   }
 
+  if (!nftData) {
+    return (
+      <div id="wrapper">
+        <div className="no-bottom no-top" id="content">
+          <div id="top"></div>
+          <section aria-label="section" className="mt90 sm-mt-0">
+            <div className="container">
+              <div className="row">
+                <div className="col-12 text-center">
+                  <h3>NFT not found</h3>
+                  <p>The requested NFT could not be found.</p>
+                  <Link to="/" className="btn-main">Go Back Home</Link>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div id="wrapper">
       <div className="no-bottom no-top" id="content">
@@ -155,9 +180,9 @@ const ItemDetails = () => {
             <div className="row">
               <div className="col-md-6 text-center">
                 <img
-                  src={nftData.image}
+                  src={nftData.nftImage || nftData.image || nftImage}
                   className="img-fluid img-rounded mb-sm-30 nft-image"
-                  alt={nftData.title}
+                  alt={nftData.title || 'NFT'}
                   onError={(e) => {
                     e.target.src = nftImage; // Fallback to default image
                   }}
@@ -165,29 +190,29 @@ const ItemDetails = () => {
               </div>
               <div className="col-md-6">
                 <div className="item_info">
-                  <h2>{nftData.title}</h2>
+                  <h2>{nftData.title || ''}</h2>
 
                   <div className="item_info_counts">
                     <div className="item_info_views">
                       <i className="fa fa-eye"></i>
-                      {nftData.views}
+                      {nftData.views || '0'}
                     </div>
                     <div className="item_info_like">
                       <i className="fa fa-heart"></i>
-                      {nftData.likes}
+                      {nftData.likes || '0'}
                     </div>
                   </div>
-                  <p>{nftData.description}</p>
+                  <p>{nftData.description || 'No description available'}</p>
                   <div className="d-flex flex-row">
                     <div className="mr40">
                       <h6>Owner</h6>
                       <div className="item_author">
                         <div className="author_list_pp">
-                          <Link to="/author">
+                          <Link to={`/author/${nftData.ownerId || nftData.owner?.id || 'unknown'}`}>
                             <img 
                               className="lazy" 
-                              src={nftData.owner.image} 
-                              alt={nftData.owner.name}
+                              src={nftData.ownerImage || nftData.owner?.image || AuthorImage} 
+                              alt={nftData.ownerName || nftData.owner?.name || 'Owner'}
                               onError={(e) => {
                                 e.target.src = AuthorImage; // Fallback to default author image
                               }}
@@ -196,7 +221,9 @@ const ItemDetails = () => {
                           </Link>
                         </div>
                         <div className="author_list_info">
-                          <Link to="/author">{nftData.owner.name}</Link>
+                          <Link to={`/author/${nftData.ownerId || nftData.owner?.id || 'unknown'}`}>
+                            {nftData.ownerName || nftData.owner?.name || ''}
+                          </Link>
                         </div>
                       </div>
                     </div>
@@ -207,11 +234,11 @@ const ItemDetails = () => {
                       <h6>Creator</h6>
                       <div className="item_author">
                         <div className="author_list_pp">
-                          <Link to="/author">
+                          <Link to={`/author/${nftData.authorId || nftData.author?.id || 'unknown'}`}>
                             <img 
                               className="lazy" 
-                              src={nftData.author.image} 
-                              alt={nftData.author.name}
+                              src={nftData.authorImage || nftData.author?.image || AuthorImage} 
+                              alt={nftData.authorName || nftData.author?.name || 'Creator'}
                               onError={(e) => {
                                 e.target.src = AuthorImage; // Fallback to default author image
                               }}
@@ -220,7 +247,9 @@ const ItemDetails = () => {
                           </Link>
                         </div>
                         <div className="author_list_info">
-                          <Link to="/author">{nftData.author.name}</Link>
+                          <Link to={`/author/${nftData.authorId || nftData.author?.id || 'unknown'}`}>
+                            {nftData.authorName || nftData.author?.name || ''}
+                          </Link>
                         </div>
                       </div>
                     </div>
@@ -228,7 +257,7 @@ const ItemDetails = () => {
                     <h6>Price</h6>
                     <div className="nft-item-price">
                       <img src={EthImage} alt="" />
-                      <span>{nftData.price}</span>
+                      <span>{nftData.price || '0'}</span>
                     </div>
                   </div>
                 </div>

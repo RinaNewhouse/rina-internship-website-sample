@@ -16300,6 +16300,38 @@ img {
   padding: 0 12px;
 }
 
+/* Follow button styling */
+.btn-following {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+}
+
+.btn-following:hover {
+  background-color: #dc3545 !important;
+  border-color: #dc3545 !important;
+}
+
+/* Copy button styling */
+#btn_copy {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-left: 8px;
+  transition: all 0.3s ease;
+}
+
+#btn_copy:hover {
+  background: #0056b3;
+}
+
+#btn_copy.copied {
+  background: #28a745;
+}
+
 .slick-slide > div > div {
   margin: 0;
 }

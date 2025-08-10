@@ -37,17 +37,15 @@ const AuthorProfileSkeleton = () => {
                   </div>
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
-                      <div className="profile_follower">573 followers</div>
-                      <Link to="#" className="btn-main">
-                        Follow
-                      </Link>
+                      <div className="skeleton-box" style={{ width: '100px', height: '16px', marginBottom: '8px' }}></div>
+                      <div className="skeleton-box" style={{ width: '80px', height: '40px', borderRadius: '20px' }}></div>
                     </div>
                   </div>
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="de_tab tab_simple">
-                  <AuthorItems authorId={null} authorImage={AuthorImage} />
+                  <AuthorItems authorId={null} authorImage={AuthorImage} authorData={null} />
                 </div>
               </div>
             </div>
@@ -63,28 +61,33 @@ const Author = () => {
   const [author, setAuthor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   useEffect(() => {
     const fetchAuthorData = async () => {
       try {
         setLoading(true);
-        const response = await fetch('https://us-central1-nft-cloud-functions.cloudfunctions.net/topSellers');
+        
+        if (!authorId) {
+          setError('No author ID provided');
+          return;
+        }
+
+        // Fetch individual author data using the specific API endpoint
+        const response = await fetch(`https://us-central1-nft-cloud-functions.cloudfunctions.net/authors?author=${authorId}`);
         if (!response.ok) {
           throw new Error('Failed to fetch author data');
         }
         const data = await response.json();
         
-        if (authorId) {
-          // Find the specific author by authorId
-          const foundAuthor = data.find(seller => seller.authorId.toString() === authorId);
-          if (foundAuthor) {
-            setAuthor(foundAuthor);
-          } else {
-            setError('Author not found');
-          }
+        if (data && data.authorId) {
+          // API returns a single object, not an array
+          setAuthor(data);
+          setFollowerCount(data.followers || 0);
         } else {
-          // Default to first author if no authorId provided
-          setAuthor(data[0] || null);
+          setError('Author not found');
         }
       } catch (err) {
         setError(err.message);
@@ -99,6 +102,35 @@ const Author = () => {
 
   const handleImageError = (e) => {
     e.target.src = AuthorImage;
+  };
+
+  const handleFollowToggle = () => {
+    if (isFollowing) {
+      setFollowerCount(prev => prev - 1);
+      setIsFollowing(false);
+    } else {
+      setFollowerCount(prev => prev + 1);
+      setIsFollowing(true);
+    }
+  };
+
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      setCopySuccess(true);
+      setTimeout(() => setCopySuccess(false), 2000);
+    }
   };
 
   if (loading) {
@@ -159,10 +191,15 @@ const Author = () => {
                           {author.authorName}
                           <span className="profile_username">@{author.authorName.toLowerCase().replace(/\s+/g, '')}</span>
                           <span id="wallet" className="profile_wallet">
-                            Author ID: {author.authorId}
+                            {author.address}
                           </span>
-                          <button id="btn_copy" title="Copy Text">
-                            Copy
+                          <button 
+                            id="btn_copy" 
+                            title="Copy Address"
+                            onClick={() => copyToClipboard(author.address)}
+                            className={copySuccess ? 'copied' : ''}
+                          >
+                            {copySuccess ? 'Copied!' : 'Copy'}
                           </button>
                         </h4>
                       </div>
@@ -170,10 +207,13 @@ const Author = () => {
                   </div>
                   <div className="profile_follow de-flex">
                     <div className="de-flex-col">
-                      <div className="profile_follower">573 followers</div>
-                      <Link to="#" className="btn-main">
-                        Follow
-                      </Link>
+                      <div className="profile_follower">{followerCount} followers</div>
+                      <button 
+                        className={`btn-main ${isFollowing ? 'btn-following' : ''}`}
+                        onClick={handleFollowToggle}
+                      >
+                        {isFollowing ? 'Unfollow' : 'Follow'}
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -181,7 +221,11 @@ const Author = () => {
 
               <div className="col-md-12">
                 <div className="de_tab tab_simple">
-                  <AuthorItems authorId={authorId} authorImage={author.authorImage || AuthorImage} />
+                  <AuthorItems 
+                    authorId={authorId} 
+                    authorImage={author.authorImage || AuthorImage}
+                    authorData={author}
+                  />
                 </div>
               </div>
             </div>
