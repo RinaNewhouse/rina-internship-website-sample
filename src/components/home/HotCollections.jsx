@@ -96,7 +96,7 @@ const HotCollections = () => {
               {loading ? (
                 // Show skeleton loading for 4 items
                 Array.from({ length: 4 }).map((_, index) => (
-                  <div key={`skeleton-${index}`}>
+                  <div key={`skeleton-${index}`} data-aos="fade" data-aos-duration="600">
                     <div className="nft_coll">
                       <div className="nft_wrap">
                         <div className="skeleton-box" style={{ width: '100%', height: '300px', borderRadius: '8px' }}></div>
@@ -114,8 +114,8 @@ const HotCollections = () => {
                 ))
               ) : (
                 // Show actual NFT items in carousel structure
-                nftItems.map((item) => (
-                  <div key={item.id}>
+                nftItems.map((item, index) => (
+                  <div key={item.id} data-aos="fade" data-aos-duration="600">
                     <div className="nft_coll">
                       <div className="nft_wrap">
                         <Link 
@@ -150,7 +150,7 @@ const HotCollections = () => {
                         >
                           <h4>{item.title || ''}</h4>
                         </Link>
-                        <span>{item.price || 0} ETH</span>
+                        <span>ERC-{item.code || '0'}</span>
                       </div>
                     </div>
                   </div>

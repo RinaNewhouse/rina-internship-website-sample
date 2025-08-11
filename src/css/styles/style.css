@@ -13308,9 +13308,8 @@ a.read_more i {
 }
 
 .nft__item_price span {
-  margin-left: 10px;
-  color: #0d0c22;
-  font-weight: 700;
+  color: #727272;
+  font-weight: 600;
 }
 
 .dark-scheme .nft__item_price span {
